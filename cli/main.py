@@ -1,5 +1,6 @@
 import click
 from cli.convert import convert
+from cli.reproject import reproject
 
 @click.group()
 def cli():
@@ -7,3 +8,4 @@ def cli():
     pass
 
 cli.add_command(convert)
+cli.add_command(reproject)
