@@ -1,0 +1,10 @@
+pyproject.toml
+cli/__init__.py
+cli/main.py
+core/__init__.py
+gistools.egg-info/PKG-INFO
+gistools.egg-info/SOURCES.txt
+gistools.egg-info/dependency_links.txt
+gistools.egg-info/entry_points.txt
+gistools.egg-info/requires.txt
+gistools.egg-info/top_level.txt
