@@ -1,6 +1,7 @@
 import click
 from cli.convert import convert
 from cli.reproject import reproject
+from cli.buffer import buffer
 
 @click.group()
 def cli():
@@ -9,3 +10,4 @@ def cli():
 
 cli.add_command(convert)
 cli.add_command(reproject)
+cli.add_command(buffer)
