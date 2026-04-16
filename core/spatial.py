@@ -45,4 +45,13 @@ def buffer_file(src, dst, distance, unit, dissolve):
         buffered = buffered.dissolve()
 
     dst.parent.mkdir(parents=True, exist_ok=True)
-    buffered.to_file(str(dst), driver="GeoJSON")
+    ext = dst.suffix.lower()
+    driver = {
+        ".shp": "ESRI Shapefile",
+        ".geojson": "GeoJSON",
+        ".kml": "KML",
+        ".gml": "GML",
+        ".gpkg": "GPKG",
+        ".csv": "CSV",
+    }.get(ext, "GeoJSON")
+    buffered.to_file(str(dst), driver=driver)

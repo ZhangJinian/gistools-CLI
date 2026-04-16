@@ -21,6 +21,32 @@ def _resolve_driver(dst, fmt):
 
 def _convert_single(src, dst, fmt, verbose):
     kind, driver = _resolve_driver(dst, fmt)
+
+    # 检测输入格式，矢量→栅格直接拒绝
+    try:
+        input_kind, _ = detect_format(src)
+    except ValueError:
+        raise click.UsageError("无法识别输入文件格式：{}".format(src))
+
+    if input_kind == "vector" and kind == "raster":
+        raise click.UsageError(
+            "不支持将矢量文件转换为栅格格式。\n"
+            "  输入：{}（矢量）\n"
+            "  输出：{}（栅格）\n"
+            "  提示：gistools convert 仅支持矢量↔矢量、栅格↔栅格转换。".format(
+                src.name, dst.name
+            )
+        )
+    if input_kind == "raster" and kind == "vector":
+        raise click.UsageError(
+            "不支持将栅格文件转换为矢量格式。\n"
+            "  输入：{}（栅格）\n"
+            "  输出：{}（矢量）\n"
+            "  提示：gistools convert 仅支持矢量↔矢量、栅格↔栅格转换。".format(
+                src.name, dst.name
+            )
+        )
+
     if verbose:
         click.echo("转换：{} → {}  [{}]".format(src, dst, driver))
     try:
@@ -41,6 +67,33 @@ def _convert_batch(src_dir, dst_dir, fmt, verbose):
     if not files:
         click.echo("⚠ 未找到可处理的文件，已跳过")
         return
+
+    # 解析目标格式
+    if fmt:
+        ext = ".{}".format(fmt.lower())
+        try:
+            target_kind, target_driver = detect_format(Path("x" + ext))
+        except ValueError:
+            raise click.UsageError("不支持的目标格式：.{}".format(fmt))
+    else:
+        target_kind = target_driver = None
+
+    # 检查所有输入文件是否与目标格式兼容
+    for f in files:
+        try:
+            input_kind, _ = detect_format(f)
+        except ValueError:
+            errors.append((f.name, "无法识别格式，跳过"))
+            continue
+        if target_kind and input_kind != target_kind:
+            raise click.UsageError(
+                "批量转换中文件格式不一致，无法批量转换。\n"
+                "  发现文件：{}（{}）\n"
+                "  目标格式：{}\n"
+                "  提示：请确保所有输入文件类型相同，或分开处理。".format(
+                    f.name, input_kind, fmt or "从扩展名推断"
+                )
+            )
 
     errors = []
     success = 0
