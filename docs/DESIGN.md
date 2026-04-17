@@ -19,66 +19,41 @@
 
 | 命令 | 功能 | 实现 |
 |------|------|------|
-| `gistools convert` | 格式转换（所有子命令的入口） | Click group |
+| `gistools convert` | 格式转换工具箱（子命令入口） | Click group |
 | `gistools reproject` | 坐标系转换 | pyproj |
 | `gistools buffer` | 缓冲区分析（仅矢量） | Shapely |
-| `gistools geojson-validate` | GeoJSON 文件验证 | json/Fiona |
 
 ### convert 子命令总览
 
 | 子命令 | 功能 | GDAL 函数 |
 |--------|------|-----------|
-| `gistools convert format` | 同格式互转（矢量↔矢量 / 栅格↔栅格） | ogr.CopyDataSource / gdal.CreateCopy |
-| `gistools convert raster2polygon` | 栅格转面（TIFF → SHP/GeoJSON） | gdal.Polygonize |
-| `gistools convert raster2point` | 栅格转点（像元中心） | gdal.Open 遍历 |
-| `gistools convert feature2raster` | 矢量转栅格（SHP/GeoJSON → TIFF） | gdal.Rasterize |
+| `gistools convert raster2polygon` | 栅格 → 面要素 | `gdal.Polygonize()` |
+| `gistools convert raster2point` | 栅格 → 点要素 | GDAL Open 遍历像元中心 |
+| `gistools convert shp2raster` | 矢量(SHP) → 栅格(TIFF) | `gdal.Rasterize()` |
+| `gistools convert shp2geojson` | SHP → GeoJSON | `ogr.CopyDataSource()` |
+| `gistools convert geojson2shp` | GeoJSON → SHP | `ogr.CopyDataSource()` |
 
 ---
 
 ## 一、convert — 格式转换工具箱
 
-`convert` 是一个 Click Group 命令，作为转换工具箱的统一入口。
+`convert` 是 Click Group 命令，作为转换工具箱的统一入口。本期（v0.3）实现以下 5 个子命令。
 
-### 1.1 convert format — 同格式互转
-
-```bash
-gistools convert format <input> <output> [--format <格式>]
-```
-
-**支持格式：**
-
-| 类型 | 扩展名 | GDAL Driver |
-|------|--------|-------------|
-| 矢量 | .shp .geojson .kml .gml .gpkg .csv | ESRI Shapefile / GeoJSON / KML / GML / GPKG / CSV |
-| 栅格 | .tif .tiff .img .hdf .nc | GTiff / HFA / HDF4 / netCDF |
-
-**转换限制：**
-- 矢量 ↔ 矢量：✓ 支持
-- 栅格 ↔ 栅格：✓ 支持
-- 矢量 → 栅格：✗ 不支持（请用 `feature2raster`）
-- 栅格 → 矢量：✗ 不支持（请用 `raster2polygon` 或 `raster2point`）
-
-**参数：**
-- `<input>` — 输入文件或文件夹
-- `<output>` — 输出文件或文件夹
-- `--format` — 目标格式；可从输出扩展名推断，显式指定时优先级更高
-
-**批量模式：** 同一文件夹内所有指定格式文件全部转换，遇错继续，完成后汇报失败列表。
-
----
-
-### 1.2 convert raster2polygon — 栅格转面
+### 1.1 convert raster2polygon — 栅格转面
 
 ```bash
-gistools convert raster2polygon <input> <output> [--field <字段名>] [--simplify <容差>] [--multi]
+gistools convert raster2polygon <input_raster> <output_polygon>
+    [--field <字段名>]        # 写入属性表的栅格值字段，默认 "DN"
+    [--simplify <容差>]      # 几何简化容差（GDAL单位），默认不简化
+    [--multi]                # 输出多部件（MultiPolygon），默认否
 ```
 
-**功能：** 将栅格的有效像元区域转为矢量面要素。
-
-**参数：**
-- `--field <name>` — 栅格值写入输出属性表的字段名（默认 `DN`）
-- `--simplify <tol>` — 简化几何的容差（GDAL 单位，不指定则不简化）
-- `--multi` — 将所有多边形合并为单一 MultiPolygon 输出
+**参数详解（参考 ArcGIS Raster To Polygon）：**
+- `<input_raster>` — 输入栅格（TIFF/IMG 等 GDAL 支持格式）
+- `<output_polygon>` — 输出矢量文件（.shp / .geojson 等）
+- `--field`：栅格值写入属性表的字段名，默认 `DN`
+- `--simplify`：几何简化容差（GDAL 单位），默认不简化
+- `--multi`：将所有多边形合并为一个 MultiPolygon 输出
 
 **GDAL 实现：** `gdal.Polygonize(band, maskBand, dst_layer, field_index)`
 
@@ -91,18 +66,19 @@ gistools convert raster2polygon dem.tif zones.geojson --multi
 
 ---
 
-### 1.3 convert raster2point — 栅格转点
+### 1.2 convert raster2point — 栅格转点
 
 ```bash
-gistools convert raster2point <input> <output> [--field <字段名>]
+gistools convert raster2point <input_raster> <output_point>
+    [--field <字段名>]        # 像元值写入的字段，默认 "value"
 ```
 
-**功能：** 将栅格每个有效像元的中心转为点要素。
+**参数详解（参考 ArcGIS Raster To Point）：**
+- `<input_raster>` — 输入栅格
+- `<output_point>` — 输出点矢量（.shp / .geojson）
+- `--field`：像元值写入的字段名，默认 `value`
 
-**参数：**
-- `--field <name>` — 像元值写入的属性字段名（默认 `value`）
-
-**GDAL 实现：** 遍历栅格波段，读每个有效像元的中心坐标 (x, y) 和值，写入点要素。
+**GDAL 实现：** 遍历栅格波段，取每个有效像元（排除 NoData）的中心坐标 (x, y) 和值，写入点要素。
 
 **使用示例：**
 ```bash
@@ -112,26 +88,63 @@ gistools convert raster2point dem.tif points.geojson --field ELEVATION
 
 ---
 
-### 1.4 convert feature2raster — 矢量转栅格
+### 1.3 convert shp2raster — 矢量转栅格
 
 ```bash
-gistools convert feature2raster <input> <output> --cellsize <数值> [--field <字段名>] [--extent <xmin ymin xmax ymax>]
+gistools convert shp2raster <input_shp> <output_raster>
+    --cellsize <数值>          # 必填，像元大小
+    [--field <字段名>]         # 用于填入栅格的字段，默认填 1
+    [--extent <xmin ymin xmax ymax>]  # 输出范围，默认从矢量外包自动计算
 ```
 
-**功能：** 将矢量要素"烧录"到栅格格网中。
+**参数详解（参考 ArcGIS Feature To Raster）：**
+- `<input_shp>` — 输入矢量文件（SHP/GeoJSON）
+- `<output_raster>` — 输出栅格（.tif 等 GDAL 栅格格式）
+- `--cellsize`：**必填**，像元大小（GDAL 单位，与输入坐标系单位一致）
+- `--field`：按某字段值填入栅格；未指定时填 1（二值栅格，所有要素填 1）
+- `--extent`：`xmin ymin xmax ymax`，手动指定输出范围；未指定时自动从矢量外包范围计算，并向外扩半个像元
 
-**参数：**
-- `--cellsize <数值>` — **必填**。像元大小（GDAL 单位，与输入坐标系单位一致）
-- `--field <name>` — 按某字段值填入栅格；未指定时填 1（二值栅格）
-- `--extent <xmin ymin xmax ymax>` — 手动指定输出范围；未指定时自动从矢量外包范围计算
-
-**GDAL 实现：** `gdal.Rasterize(dst_ds, [1], src_layer)` + 设置 GeoTransform
+**GDAL 实现：** `gdal.RasterizeLayer(dst_ds, [1], src_layer, options=[f"ATTRIBUTE={field}"])` + 设置 GeoTransform
 
 **使用示例：**
 ```bash
-gistools convert feature2raster zone.shp zone.tif --cellsize 30
-gistools convert feature2raster zone.shp zone.tif --cellsize 0.001 --field POPULATION
-gistools convert feature2raster zone.shp zone.tif --cellsize 30 --extent "100 20 200 50"
+gistools convert shp2raster zone.shp zone.tif --cellsize 30
+gistools convert shp2raster zone.shp zone.tif --cellsize 0.001 --field POPULATION
+gistools convert shp2raster zone.shp zone.tif --cellsize 30 --extent "100 20 200 50"
+```
+
+---
+
+### 1.4 convert shp2geojson — SHP 转 GeoJSON
+
+```bash
+gistools convert shp2geojson <input_shp> <output_geojson>
+    [--encoding <编码>]         # 输出编码，默认 UTF-8
+```
+
+**GDAL 实现：** `ogr.CopyDataSource()`，自动保留投影信息
+
+**使用示例：**
+```bash
+gistools convert shp2geojson zone.shp zone.geojson
+gistools convert shp2geojson zone.shp zone.geojson --encoding GBK
+```
+
+---
+
+### 1.5 convert geojson2shp — GeoJSON 转 SHP
+
+```bash
+gistools convert geojson2shp <input_geojson> <output_shp>
+    [--encoding <编码>]         # 输入文件编码，默认 UTF-8
+```
+
+**GDAL 实现：** `ogr.CopyDataSource()`
+
+**使用示例：**
+```bash
+gistools convert geojson2shp zone.geojson zone.shp
+gistools convert geojson2shp zone.geojson zone.shp --encoding GBK
 ```
 
 ---
