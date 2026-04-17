@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "reproject",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::4490" } },
+"features": [
+{ "type": "Feature", "id": 0, "properties": { "Id": 0 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 36.625519324281129, 37.030834055478465 ], [ 36.648051140723283, 37.030834055478465 ], [ 36.648051140723283, 37.012508665807161 ], [ 36.625519324281129, 37.012508665807161 ], [ 36.625519324281129, 37.030834055478465 ] ] ] } }
+]
+}
