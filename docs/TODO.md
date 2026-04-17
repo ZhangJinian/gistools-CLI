@@ -50,18 +50,20 @@
 
 ### Task #26 — Data Management 工具箱
 
-**状态：** 🔴 待开始
+**状态：** ✅ 完成（2026-04-17）
 
 **命令：**
 
-| 命令 | 功能 | 核心实现 |
-|------|------|---------|
-| `gistools data merge` | 合并多个矢量文件 | GeoPandas `pd.concat` |
-| `gistools data split` | 按字段或位置分割矢量 | GeoPandas groupby |
-| `gistools data feature-to-line` | 面/线要素转线 | Shapely `exterior` |
-| `gistools data feature-to-polygon` | 线要素转面 | Shapely `Polygon` |
-| `gistools data add-field` | 添加字段 | GeoPandas `assign` |
-| `gistools data delete-field` | 删除字段 | GeoPandas `drop` |
+| 命令 | 功能 | 核心实现 | 测试 |
+|------|------|---------|------|
+| `gistools data merge` | 合并多个矢量文件 | GeoPandas `pd.concat` | ✅ 通过 |
+| `gistools data split` | 按字段值分割矢量 | GeoPandas groupby | ✅ 通过 |
+| `gistools data feature-to-line` | 面/线要素转线 | Shapely `exterior` | ✅ 通过 |
+| `gistools data feature-to-polygon` | 线要素转面 | Shapely `Polygon` | ✅ 通过 |
+| `gistools data add-field` | 添加字段 | GeoPandas `assign` | ✅ 通过 |
+| `gistools data delete-field` | 删除字段 | GeoPandas `drop` | ✅ 通过 |
+
+**测试结果：** 30/30 passed（tests/test_data_cmd.py）
 
 **参考：** ArcGIS Data Management Toolbox 参数规范
 
