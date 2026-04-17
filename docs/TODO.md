@@ -15,11 +15,11 @@
 
 | 命令 | 功能 | 核心实现 |
 |------|------|---------|
-| `gistools clip` | 裁剪（输入要素按裁剪图层切） | Shapely `intersection` |
-| `gistools intersect` | 交集（多要素相交） | Shapely `intersection` |
-| `gistools union` | 合并（保留全部） | Shapely `unary_union` / GeoPandas `overlay` |
-| `gistools dissolve` | 融合（按字段合并相邻多边形） | GeoPandas `dissolve` |
-| `gistools spatial-join` | 空间连接（基于空间关系关联属性） | GeoPandas `sjoin` |
+| `gistools analysis clip` | 裁剪（输入要素按裁剪图层切） | Shapely `intersection` |
+| `gistools analysis intersect` | 交集（多要素相交） | Shapely `intersection` |
+| `gistools analysis union` | 合并（保留全部） | Shapely `unary_union` / GeoPandas `overlay` |
+| `gistools analysis dissolve` | 融合（按字段合并相邻多边形） | GeoPandas `dissolve` |
+| `gistools analysis spatial-join` | 空间连接（基于空间关系关联属性） | GeoPandas `sjoin` |
 
 **参考：** ArcGIS Analysis Toolbox 参数规范
 
@@ -33,10 +33,10 @@
 
 | 命令 | 功能 | 核心实现 |
 |------|------|---------|
-| `gistools slope` | 坡度分析（度或百分比） | GDAL DEMProcessing / RichDEM |
-| `gistools aspect` | 坡向分析（方位角） | GDAL DEMProcessing / RichDEM |
-| `gistools hillshade` | 山体阴影 | GDAL DEMProcessing |
-| `gistools contour` | 等高线生成 | GDAL `gdal_contour` |
+| `gistools spatial slope` | 坡度分析（度或百分比） | GDAL DEMProcessing / RichDEM |
+| `gistools spatial aspect` | 坡向分析（方位角） | GDAL DEMProcessing / RichDEM |
+| `gistools spatial hillshade` | 山体阴影 | GDAL DEMProcessing |
+| `gistools spatial contour` | 等高线生成 | GDAL `gdal_contour` |
 
 **参考：** ArcGIS Spatial Analyst Toolbox 参数规范
 
@@ -50,12 +50,12 @@
 
 | 命令 | 功能 | 核心实现 |
 |------|------|---------|
-| `gistools merge` | 合并多个矢量文件 | GeoPandas `pd.concat` |
-| `gistools split` | 按字段或位置分割矢量 | GeoPandas groupby |
-| `gistools feature-to-line` | 面/线要素转线 | Shapely `exterior` |
-| `gistools feature-to-polygon` | 线要素转面 | Shapely `Polygon` |
-| `gistools add-field` | 添加字段 | GeoPandas `assign` |
-| `gistools delete-field` | 删除字段 | GeoPandas `drop` |
+| `gistools data merge` | 合并多个矢量文件 | GeoPandas `pd.concat` |
+| `gistools data split` | 按字段或位置分割矢量 | GeoPandas groupby |
+| `gistools data feature-to-line` | 面/线要素转线 | Shapely `exterior` |
+| `gistools data feature-to-polygon` | 线要素转面 | Shapely `Polygon` |
+| `gistools data add-field` | 添加字段 | GeoPandas `assign` |
+| `gistools data delete-field` | 删除字段 | GeoPandas `drop` |
 
 **参考：** ArcGIS Data Management Toolbox 参数规范
 
