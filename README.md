@@ -1,93 +1,93 @@
 # GISTools CLI
 
-面向 GIS 从业者和开发者的命令行工具包，将常用 GIS 操作封装为标准 CLI 命令。
+A command-line toolkit for GIS professionals and developers, wrapping common GIS operations into standard CLI commands.
 
-## 安装
+## Installation
 
-**开发环境：**
+**Development:**
 ```bash
 pip install -e .
 ```
 
-**依赖：** Python 3.9+ / GDAL 2.4+
+**Requirements:** Python 3.9+ / GDAL 2.4+
 
-## 快速开始
+## Quick Start
 
 ```bash
-# 查看所有命令
+# Show all commands
 gistools --help
 
-# convert 工具箱
+# convert toolbox
 gistools convert --help
 
-# raster2polygon — 栅格转面
+# raster2polygon — Raster to polygon
 gistools convert raster2polygon input.tif output.shp --field DN
 
-# raster2point — 栅格转点
+# raster2point — Raster to point
 gistools convert raster2point input.tif output.shp
 
-# shp2raster — 矢量转栅格
+# shp2raster — Vector to raster
 gistools convert shp2raster input.shp output.tif --cellsize 30
 
-# shp2geojson — SHP 转 GeoJSON
+# shp2geojson — SHP to GeoJSON
 gistools convert shp2geojson input.shp output.geojson
 
-# geojson2shp — GeoJSON 转 SHP
+# geojson2shp — GeoJSON to SHP
 gistools convert geojson2shp input.geojson output.shp
 
-# 坐标系转换
+# Coordinate system transformation
 gistools reproject input.shp output.shp --to WGS84
 
-# 缓冲区分析
+# Buffer analysis
 gistools buffer input.shp output.shp --distance 100 --unit meters
 ```
 
-## 功能总览
+## Features
 
-| 命令 | 功能 |
-|------|------|
-| `gistools convert raster2polygon` | 栅格 → 面要素（gdal.Polygonize） |
-| `gistools convert raster2point` | 栅格 → 点要素（像元中心遍历） |
-| `gistools convert shp2raster` | 矢量 → 栅格（gdal.Rasterize） |
+| Command | Description |
+|---------|-------------|
+| `gistools convert raster2polygon` | Raster → Polygon (gdal.Polygonize) |
+| `gistools convert raster2point` | Raster → Point (pixel center traversal) |
+| `gistools convert shp2raster` | Vector → Raster (gdal.Rasterize) |
 | `gistools convert shp2geojson` | SHP → GeoJSON |
 | `gistools convert geojson2shp` | GeoJSON → SHP |
-| `gistools reproject` | 坐标系转换（支持 EPSG/中文别名） |
-| `gistools buffer` | 缓冲区分析（支持米/千米/度单位） |
+| `gistools reproject` | Coordinate system transformation (EPSG / Chinese aliases) |
+| `gistools buffer` | Buffer analysis (meters / km / degrees) |
 
-## 技术栈
+## Tech Stack
 
-- **CLI 框架**：Click 8.x
-- **矢量/栅格 I/O**：GDAL（osgeo）
-- **坐标系**：pyproj 3.x
-- **空间操作**：Shapely 2.x + GeoPandas 1.x
-- **测试**：pytest
+- **CLI Framework**: Click 8.x
+- **Vector/Raster I/O**: GDAL (osgeo)
+- **Coordinate Systems**: pyproj 3.x
+- **Spatial Operations**: Shapely 2.x + GeoPandas 1.x
+- **Testing**: pytest
 
-## 项目结构
+## Project Structure
 
 ```
 gistools/
-├── cli/               # CLI 命令入口
+├── cli/               # CLI entry points
 │   ├── main.py        # Click group
-│   ├── convert.py     # convert 命令组
-│   ├── reproject.py   # 坐标系转换
-│   └── buffer.py      # 缓冲区分析
-├── core/              # 核心功能模块
-│   ├── formats.py     # 格式检测与转换
-│   ├── rasterize.py   # Polygonize/Rasterize 实现
-│   ├── spatial.py     # 空间分析
-│   ├── crs.py         # 坐标系别名
-│   └── batch.py       # 批量处理
-├── tests/             # pytest 测试
-└── docs/              # 设计文档
+│   ├── convert.py     # convert command group
+│   ├── reproject.py   # Coordinate transformation
+│   └── buffer.py      # Buffer analysis
+├── core/              # Core modules
+│   ├── formats.py     # Format detection and conversion
+│   ├── rasterize.py   # Polygonize/Rasterize implementation
+│   ├── spatial.py     # Spatial analysis
+│   ├── crs.py         # Coordinate system aliases
+│   └── batch.py       # Batch processing
+├── tests/             # pytest tests
+└── docs/              # Design documents
 ```
 
-## 版本历史
+## Changelog
 
-| 版本 | 日期 | 变更 |
-|------|------|------|
-| v0.3 | 2026-04-17 | convert 工具箱扩展（raster2polygon/raster2point/shp2raster/shp2geojson/geojson2shp） |
-| v0.2 | 2026-04-17 | buffer 输出格式修复；矢量↔栅格转换报错提示 |
-| v0.1 | 2026-04-15 | 初始版本：convert / reproject / buffer |
+| Version | Date | Changes |
+|---------|------|---------|
+| v0.3 | 2026-04-17 | convert toolbox extension (raster2polygon/raster2point/shp2raster/shp2geojson/geojson2shp) |
+| v0.2 | 2026-04-17 | buffer output format fix; vector↔raster conversion error messages |
+| v0.1 | 2026-04-15 | Initial release: convert / reproject / buffer |
 
 ## License
 
