@@ -9,17 +9,19 @@
 
 ### Task #24 — Analysis 工具箱
 
-**状态：** 🟡 开发中
+**状态：** ✅ 完成（2026-04-17）
 
 **命令：**
 
-| 命令 | 功能 | 核心实现 |
-|------|------|---------|
-| `gistools analysis clip` | 裁剪（输入要素按裁剪图层切） | Shapely `intersection` |
-| `gistools analysis intersect` | 交集（多要素相交） | Shapely `intersection` |
-| `gistools analysis union` | 合并（保留全部） | Shapely `unary_union` / GeoPandas `overlay` |
-| `gistools analysis dissolve` | 融合（按字段合并相邻多边形） | GeoPandas `dissolve` |
-| `gistools analysis spatial-join` | 空间连接（基于空间关系关联属性） | GeoPandas `sjoin` |
+| 命令 | 功能 | 核心实现 | 测试 |
+|------|------|---------|------|
+| `gistools analysis clip` | 裁剪（输入要素按裁剪图层切） | Shapely `intersection` | ✅ 通过 |
+| `gistools analysis intersect` | 交集（多要素相交） | Shapely `intersection` | ✅ 通过 |
+| `gistools analysis union` | 合并（保留全部） | GeoPandas `pd.concat` | ✅ 通过 |
+| `gistools analysis dissolve` | 融合（按字段合并相邻多边形） | GeoPandas `dissolve` | ✅ 通过 |
+| `gistools analysis spatial-join` | 空间连接（基于空间关系关联属性） | GeoPandas `sjoin` | ✅ 通过 |
+
+**测试结果：** 23/23 passed（tests/test_analysis_cmd.py）
 
 **参考：** ArcGIS Analysis Toolbox 参数规范
 
