@@ -29,16 +29,20 @@
 
 ### Task #25 — Spatial Analyst 工具箱
 
-**状态：** 🔴 待开始
+**状态：** ✅ 完成（2026-04-17）
 
 **命令：**
 
-| 命令 | 功能 | 核心实现 |
-|------|------|---------|
-| `gistools spatial slope` | 坡度分析（度或百分比） | GDAL DEMProcessing / RichDEM |
-| `gistools spatial aspect` | 坡向分析（方位角） | GDAL DEMProcessing / RichDEM |
-| `gistools spatial hillshade` | 山体阴影 | GDAL DEMProcessing |
-| `gistools spatial contour` | 等高线生成 | GDAL `gdal_contour` |
+| 命令 | 功能 | 核心实现 | 测试 |
+|------|------|---------|------|
+| `gistools spatial slope` | 坡度分析（度或百分比） | GDAL DEMProcessing (slopeFormat) | ✅ 通过 |
+| `gistools spatial aspect` | 坡向分析（方位角） | GDAL DEMProcessing | ✅ 通过 |
+| `gistools spatial hillshade` | 山体阴影 | GDAL DEMProcessing | ✅ 通过 |
+| `gistools spatial contour` | 等高线生成 | `gdal_contour` CLI | ✅ 通过 |
+
+**测试结果：** 15/15 passed（tests/test_spatial_cmd.py）
+
+**注意：** GDAL 2.4 Python API 的 DEMProcessing options 参数有兼容性 bug，故 contour 使用 `subprocess.run(['gdal_contour', ...])` 调用 CLI。
 
 **参考：** ArcGIS Spatial Analyst Toolbox 参数规范
 
