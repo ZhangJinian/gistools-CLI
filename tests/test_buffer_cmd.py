@@ -25,7 +25,7 @@ def point_geojson(tmp_path):
 
 def test_buffer_basic(runner, point_geojson, tmp_path):
     result = runner.invoke(cli, [
-        "buffer",
+        "analysis", "buffer",
         str(point_geojson),
         str(tmp_path / "out.geojson"),
         "--distance", "500",
@@ -36,7 +36,7 @@ def test_buffer_basic(runner, point_geojson, tmp_path):
 
 def test_buffer_km_unit(runner, point_geojson, tmp_path):
     result = runner.invoke(cli, [
-        "buffer", str(point_geojson), str(tmp_path / "out.geojson"),
+        "analysis", "buffer", str(point_geojson), str(tmp_path / "out.geojson"),
         "--distance", "1", "--unit", "km",
     ])
     assert result.exit_code == 0
@@ -50,7 +50,7 @@ def test_buffer_dissolve(runner, tmp_path):
     src = tmp_path / "pts.geojson"
     gdf.to_file(str(src), driver="GeoJSON")
     result = runner.invoke(cli, [
-        "buffer", str(src), str(tmp_path / "out.geojson"),
+        "analysis", "buffer", str(src), str(tmp_path / "out.geojson"),
         "--distance", "500", "--dissolve",
     ])
     assert result.exit_code == 0
@@ -66,7 +66,7 @@ def test_buffer_rejects_raster(runner, tmp_path):
     ds.GetRasterBand(1).WriteArray(np.zeros((10, 10), dtype=np.uint8))
     ds = None
     result = runner.invoke(cli, [
-        "buffer", str(fake_tif), str(tmp_path / "out.geojson"),
+        "analysis", "buffer", str(fake_tif), str(tmp_path / "out.geojson"),
         "--distance", "500",
     ])
     assert result.exit_code == 1
@@ -76,7 +76,7 @@ def test_buffer_rejects_raster(runner, tmp_path):
 
 def test_buffer_missing_distance(runner, point_geojson, tmp_path):
     result = runner.invoke(cli, [
-        "buffer", str(point_geojson), str(tmp_path / "out.geojson"),
+        "analysis", "buffer", str(point_geojson), str(tmp_path / "out.geojson"),
     ])
     assert result.exit_code == 2
 
@@ -87,7 +87,7 @@ def test_buffer_batch(runner, tmp_path):
     gdf = gpd.GeoDataFrame(geometry=[Point(114.0, 22.5)], crs="EPSG:4326")
     gdf.to_file(str(src_dir / "a.geojson"), driver="GeoJSON")
     result = runner.invoke(cli, [
-        "buffer", str(src_dir), str(tmp_path / "dst"), "--distance", "500",
+        "analysis", "buffer", str(src_dir), str(tmp_path / "dst"), "--distance", "500",
     ])
     assert result.exit_code in (0, 1)
     assert "成功" in result.output

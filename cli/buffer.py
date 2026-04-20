@@ -5,6 +5,7 @@ from rich.progress import track
 from core.formats import detect_format, VECTOR_DRIVERS, RASTER_DRIVERS
 from core.spatial import buffer_file
 from core.batch import collect_input_files, report_errors
+from cli.analysis import analysis
 
 
 def _check_not_raster(path):
@@ -59,7 +60,7 @@ def _buffer_batch(src_dir, dst_dir, distance, unit, dissolve, verbose, dry_run):
         sys.exit(1)
 
 
-@click.command()
+@analysis.command()
 @click.argument("input_path", metavar="<input>", type=click.Path(exists=False))
 @click.argument("output_path", metavar="<output>")
 @click.option("--distance", required=True, type=float, help="缓冲距离（必填）")
