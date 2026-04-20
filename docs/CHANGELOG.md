@@ -4,10 +4,45 @@
 
 ---
 
-## 版本 v0.3（开发中）
+## 版本 v0.4（开发中）
 
 **日期：** 2026-04-17
-**状态：** 🚧 开发中
+
+### 本期工作：新增三个工具箱
+
+#### Analysis 工具箱
+| 子命令 | 功能 |
+|--------|------|
+| `gistools analysis clip` | 裁剪 |
+| `gistools analysis intersect` | 交集 |
+| `gistools analysis union` | 合并 |
+| `gistools analysis dissolve` | 融合（按字段） |
+| `gistools analysis spatial-join` | 空间连接 |
+
+#### Spatial Analyst 工具箱
+| 子命令 | 功能 |
+|--------|------|
+| `gistools spatial slope` | 坡度分析 |
+| `gistools spatial aspect` | 坡向分析 |
+| `gistools spatial hillshade` | 山体阴影 |
+| `gistools spatial contour` | 等高线生成 |
+
+#### Data Management 工具箱
+| 子命令 | 功能 |
+|--------|------|
+| `gistools data merge` | 合并多个矢量文件 |
+| `gistools data split` | 按字段分割 |
+| `gistools data feature-to-line` | 面/线转线 |
+| `gistools data feature-to-polygon` | 线转面 |
+| `gistools data add-field` | 添加字段 |
+| `gistools data delete-field` | 删除字段 |
+
+---
+
+## 版本 v0.3
+
+**日期：** 2026-04-17
+**Tag:** `v0.3`
 
 ### 本期工作：convert 工具箱扩展
 
